@@ -1,0 +1,35 @@
+root:
+  level: debug # <info debug warn error>, change logger level here
+  appenders:
+    - general
+    - stdout
+
+refresh_rate: 30 seconds
+
+appenders:
+  stdout:
+    kind: console
+
+  general:
+    kind: file
+    path: "logs/general.log" # if start with args to special this file, use absolute path is better.
+    encoder:
+      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+
+  others:
+    kind: file
+    path: "logs/others.log" # if start with args to special this file, use absolute path is better.
+    encoder:
+      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+
+loggers:
+  tokio_reactor:
+    level: info
+    appenders:
+      - others
+    additive: false
+  hyper:
+    level: info
+    appenders:
+      - others
+    additive: false
