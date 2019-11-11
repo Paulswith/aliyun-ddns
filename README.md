@@ -4,7 +4,7 @@ Due to aliyun-ddns sdk not provide rust version, this is written by rust which f
 
 ## how to use
 抱歉来迟了，补充了篇中文的配置文档:
-[aliyun-ddns设置定时监控更新](https://pace.eternaless.com/2019/10/14/aliyun-ddns%E8%AE%BE%E7%BD%AE%E5%AE%9A%E6%97%B6%E7%9B%91%E6%8E%A7%E6%9B%B4%E6%96%B0/)
+[aliyun-ddns设置定时监控更新](http://pace.eternaless.com/2019/10/14/aliyunddns-set-timing-monitoring-update/)
 
 ### check config
 - config.yaml
