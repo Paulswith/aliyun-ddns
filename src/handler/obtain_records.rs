@@ -1,7 +1,7 @@
 /*
 create at `2019-09-11` by `itachy`
 */
-use super::construct_request::generate_request_url;
+use super::construct_request::generate_request_uri;
 use crate::model::{initial_model::ConfigModel,
                    record_model::DomainRecordModel,
                    record_model::Record};
@@ -12,7 +12,7 @@ use crate::derived::errors;
 
 pub fn obtain_domain_records(config_model: &ConfigModel) -> errors::Result<Vec<Record>> {
     let root_domain = config_model.current_root_domain();
-    let request_url = generate_request_url(config_model,
+    let request_url = generate_request_uri(config_model,
                                            root_domain,
                                            AC_DESCRIBE_DOMAIN_RECORDS,
                                            None);

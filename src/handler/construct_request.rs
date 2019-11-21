@@ -8,7 +8,7 @@ use super::comm_prehandle::*;
 use std::collections::BTreeMap;
 
 
-pub fn generate_request_url(config_model: &ConfigModel,
+pub fn generate_request_uri(config_model: &ConfigModel,
                             domain_name: &str,
                             action: &str,
                             custom_params: Option<BTreeMap<&'static str, String>>) -> String {

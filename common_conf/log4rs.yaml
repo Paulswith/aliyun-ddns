@@ -1,5 +1,5 @@
 root:
-  level: debug # <info debug warn error>, change logger level here
+  level: info # <info debug warn error>, change logger level here
   appenders:
     - general
     - stdout
@@ -9,18 +9,20 @@ refresh_rate: 30 seconds
 appenders:
   stdout:
     kind: console
+    encoder:
+      pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
 
   general:
     kind: file
     path: "logs/general.log" # if start with args to special this file, use absolute path is better.
     encoder:
-      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+      pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
 
   others:
     kind: file
     path: "logs/others.log" # if start with args to special this file, use absolute path is better.
     encoder:
-      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+      pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
 
 loggers:
   tokio_reactor:

@@ -2,7 +2,7 @@
 create at `2019-09-11` by `itachy`
 */
 
-use super::construct_request::generate_request_url;
+use super::construct_request::generate_request_uri;
 use crate::model::{initial_model::ConfigModel,
                    record_model::Record};
 use crate::config::{handle_action::AC_UPDATE_DOMAIN_RECORD, param::*};
@@ -21,7 +21,7 @@ pub fn update_domain_record(config_model: &ConfigModel,
             info!("Match one record need update: {}", record.rr());
             // PRE-UPDATE
             let custom_param = construct_addition_param(bind_pub_ip, record);
-            let request_url = generate_request_url(config_model,
+            let request_url = generate_request_uri(config_model,
                                                    root_domain,
                                                    AC_UPDATE_DOMAIN_RECORD,
                                                    Some(custom_param));
