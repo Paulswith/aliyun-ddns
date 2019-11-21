@@ -34,25 +34,25 @@ struct DomainRecords {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Record {
     #[serde(rename = "RR")]
-    rr: String,
+    rr: String,         // nec
     #[serde(rename = "Status")]
-    status: String,
+    status: Option<String>,
     #[serde(rename = "Value")]
-    value: String,
+    value: String,      // nec
     #[serde(rename = "Weight")]
-    weight: i64,
+    weight: Option<i64>,
     #[serde(rename = "RecordId")]
-    record_id: String,
+    record_id: String,  // nec
     #[serde(rename = "Type")]
-    type_field: String,
+    type_field: String, // nec
     #[serde(rename = "DomainName")]
-    domain_name: String,
+    domain_name: Option<String>,
     #[serde(rename = "Locked")]
-    locked: bool,
+    locked: Option<bool>,
     #[serde(rename = "Line")]
-    line: String,
+    line: Option<String>,
     #[serde(rename = "TTL")]
-    ttl: i64,
+    ttl: Option<i64>,
     #[serde(rename = "Priority")]
     priority: Option<i64>,
 }
@@ -64,5 +64,6 @@ impl Record {
 
     pub fn record_id(&self) -> &str { &self.record_id }
 
+    // Compare self.value(ip format) with other ip
     pub fn is_value_equal(&self, value: &str) -> bool { self.value == value }
 }
