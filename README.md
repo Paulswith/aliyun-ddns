@@ -1,6 +1,11 @@
 # aliyun-ddns for rust
-
 Due to aliyun-ddns sdk not provide rust version, this is written by rust which follows aliyun docs.
+
+
+## builg at linux
+Make sure you also have the development packages of openssl installed.
+For example, `libssl-dev` on Ubuntu or `openssl-devel` on Fedora or 'openssl-devel' on Centos/RedHat
+
 
 ## how to use
 抱歉来迟了，补充了篇中文的配置文档:
@@ -40,28 +45,48 @@ setting your `root-level` logger level and `appenders-general, appenders-other` 
 
 ```yaml
 root:
-  level: debug # <info debug warn error>, change logger level here
+  level: info # <info debug warn error>, change logger level here
   appenders:
     - general
-    - stdout
+#    - stdout  # if not debugging at IDE, please annotation this line.
 
 refresh_rate: 30 seconds
 
 appenders:
   stdout:
     kind: console
+    encoder:
+      pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
 
   general:
-    kind: file
+    kind: rolling_file
     path: "logs/general.log" # if start with args to special this file, use absolute path is better.
     encoder:
-      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+      pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
+    policy:
+      trigger:
+        kind: size
+        limit: 10 mb
+      roller:
+        kind: fixed_window
+        pattern: 'logs/general.log.{}'
+        base: 1
+        count: 10
 
   others:
-    kind: file
-    path: "logs/others.log" # if start with args to special this file, use absolute path is better.
-    encoder:
-      pattern: "{d} [{t}] {l} {M}:{m}{n}"
+    kind: rolling_file
+      path: "logs/others.log" # if start with args to special this file, use absolute path is better.
+      encoder:
+        pattern: "[{d(%Y-%m-%d %H:%M:%S)}]|{l}|{M}@{T}<{f}:{L}>: {m}{n}"
+      policy:
+        trigger:
+          kind: size
+          limit: 10 mb
+        roller:
+          kind: fixed_window
+          pattern: 'logs/others.log.{}'
+          base: 1
+          count: 10
 
 loggers:
   tokio_reactor:
