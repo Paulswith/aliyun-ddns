@@ -9,7 +9,7 @@ For example, `libssl-dev` on Ubuntu or `openssl-devel` on Fedora or 'openssl-dev
 
 ## how to use
 抱歉来迟了，补充了篇中文的配置文档:
-[aliyun-ddns设置定时监控更新](http://pace.eternaless.com/2019/10/14/aliyunddns-set-timing-monitoring-update/)
+[aliyun-ddns设置定时监控更新](https://eternaless.com/posts/625554dc/)
 
 ### check config
 - config.yaml
