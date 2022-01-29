@@ -8,10 +8,13 @@ use reqwest::header::{REFERER, USER_AGENT};
 use std::time::Duration;
 
 
-/** desc: 构造一个客户端
- @Param:
- @return:
-*/
+/// make a full http-client with default headers
+///
+/// # Arguments
+///
+/// * `referer`:
+///
+/// returns: Result<Client, Error>
 pub fn construct_client(referer: Option<&str>) -> reqwest::Result<reqwest::Client> {
     let headers = get_request_header(referer);
     let timeout = Duration::from_secs(REQ_DEFAULT_TIME_OUT_SECOND);
@@ -21,11 +24,12 @@ pub fn construct_client(referer: Option<&str>) -> reqwest::Result<reqwest::Clien
         .build()
 }
 
-/* -------------------------------------------private------------------------------------------- */
-/** desc: 提供一个referer 返回header
- @Param:
- @return:
-*/
+/// make a http header map
+/// # Arguments
+///
+/// * `referer`: http-header referer
+///
+/// returns: HeaderMap<HeaderValue>
 fn get_request_header(referer: Option<&str>) -> HeaderMap {
     let mut header = HeaderMap::new();
     match HeaderValue::from_str(HEADER_USER_AGENT) {
