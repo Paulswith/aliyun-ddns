@@ -7,10 +7,10 @@ use crate::model::{initial_model::ConfigModel,
                    record_model::Record};
 use crate::config::handle_action::AC_DESCRIBE_DOMAIN_RECORDS;
 use crate::network::basic::construct_client;
-use crate::derived::errors;
+use anyhow::{anyhow, Result};
 
 
-pub fn obtain_domain_records(config_model: &ConfigModel) -> errors::Result<Vec<Record>> {
+pub fn obtain_domain_records(config_model: &ConfigModel) -> Result<Vec<Record>> {
     let root_domain = config_model.current_root_domain();
     let request_url = generate_request_uri(config_model,
                                            root_domain,
@@ -18,11 +18,13 @@ pub fn obtain_domain_records(config_model: &ConfigModel) -> errors::Result<Vec<R
                                            None);
     debug!("Obtain domain records with url: {}", request_url);
     //TODO: fetch more page
-    let client= construct_client(None)?;
+    let client = construct_client(None)?;
     let mut res = client.get(&request_url).send()?;
-    if res.status() != reqwest::StatusCode::OK {
-        bail!(errors::ErrorKind::ResponseWithErrorStatus(res.status().to_string()));
+    match res.status() {
+        reqwest::StatusCode::OK => {
+            let model: DomainRecordModel = res.json()?;
+            Ok(model.records())
+        }
+        status_code => Err(anyhow!("Request domain records got wrong status-code: {}", status_code))
     }
-    let model: DomainRecordModel = res.json()?;
-    Ok(model.records())
 }
