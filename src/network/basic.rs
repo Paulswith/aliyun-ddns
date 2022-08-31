@@ -1,7 +1,3 @@
-/*
-create at `2019-09-09` by `itachy`
-*/
-
 use crate::config::const_config::*;
 use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::header::{REFERER, USER_AGENT};

@@ -1,6 +1,3 @@
-/*
-create at `2019-09-11` by `itachy`
-*/
 use serde::{Deserialize, Serialize};
 
 

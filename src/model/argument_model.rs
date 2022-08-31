@@ -1,6 +1,3 @@
-/*
-create at `2019-09-12` by `itachy`
-*/
 use structopt::StructOpt;
 use std::path::PathBuf;
 
