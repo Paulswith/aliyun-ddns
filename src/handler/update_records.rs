@@ -8,7 +8,7 @@ pub async fn update_domain_record(
     config_model: &ConfigModel,
     bind_pub_ip: &str,
     domain_records: &Vec<Record>,
-) {
+) -> anyhow::Result<()> {
     let root_domain = config_model.current_root_domain();
     let change_sub_domains = config_model.change_sub_domains();
     let mut change_counter = 0;
@@ -22,7 +22,7 @@ pub async fn update_domain_record(
                 root_domain,
                 AC_UPDATE_DOMAIN_RECORD,
                 Some(custom_param),
-            );
+            )?;
             debug!("Obtain domain records with url: {}", request_url);
             // UPDATING
             match update_single_domain_record(&request_url).await {
@@ -41,6 +41,7 @@ pub async fn update_domain_record(
         "Task done, successfully changed {} record(s).",
         change_counter
     );
+    Ok(())
 }
 
 fn construct_addition_param(bind_pub_ip: &str, record: &Record) -> BTreeMap<&'static str, String> {

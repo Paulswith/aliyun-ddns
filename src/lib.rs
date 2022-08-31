@@ -34,7 +34,7 @@ pub async fn entry(argument: &Argument) -> Result<()> {
         }
         Ok(ref records) => {
             info!("Obtained {} records", records.len());
-            update_records::update_domain_record(config_model, &public_ip, records).await;
+            update_records::update_domain_record(config_model, &public_ip, records).await?;
         }
     }
     Ok(())

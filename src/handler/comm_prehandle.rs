@@ -1,14 +1,16 @@
 use chrono::{DateTime, SecondsFormat, Utc};
-use crypto::{hmac::Hmac, mac::Mac, sha1::Sha1};
+use hmac::{Hmac, Mac};
 use rand::Rng;
+use sha1::Sha1;
 use url::form_urlencoded::byte_serialize;
 
-pub(super) fn encrypt_by_hmac_sha1(with_key: &str, raw_content: &str) -> String {
-    let sha1_encryptor = Sha1::new();
-    let mut encryptor = Hmac::new(sha1_encryptor, with_key.as_bytes());
-    encryptor.input(raw_content.as_bytes());
-    let res = encryptor.result();
-    base64::encode(res.code())
+type HmacSha1 = Hmac<Sha1>;
+
+pub(super) fn encrypt_by_hmac_sha1(with_key: &str, raw_content: &str) -> anyhow::Result<String> {
+    let mut inst = HmacSha1::new_from_slice(with_key.as_bytes())?;
+    inst.update(raw_content.as_bytes());
+    let res_output = inst.finalize();
+    Ok(base64::encode(res_output.into_bytes()))
 }
 
 pub(super) fn generate_utc_timestamp() -> String {
@@ -30,3 +32,16 @@ pub(super) fn percent_encode(raw_str: &str) -> String {
         .replace("*", "%2A")
         .replace("%7E", "~")
 }
+
+// TODO: add unit test
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+
+//     #[test]
+//     fn test_hmac_sha1() {
+//         let key = "abcdefg";
+//         let raw = "1234567890";
+//         let r1 = encrypt_by_hmac_sha1(key, raw).unwrap();
+//     }
+// }

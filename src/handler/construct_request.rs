@@ -8,15 +8,17 @@ pub fn generate_request_uri(
     domain_name: &str,
     action: &str,
     custom_params: Option<BTreeMap<&'static str, String>>,
-) -> String {
+) -> anyhow::Result<String> {
     // append '&' to secret:
     let ref access_key_secret = format!("{}&", config_model.access_key_secret());
     let mut param_tree = generate_param(config_model, domain_name, action, custom_params);
     // signature
-    supply_signature(&mut param_tree, access_key_secret);
+    supply_signature(&mut param_tree, access_key_secret)?;
     info!("Complete params: {:?}", param_tree);
     let complete_url_query_params = flat_to_url_query_param(&param_tree);
-    format!("{}/?{}", ALIYUN_DNS_DOMAIN, complete_url_query_params)
+    Ok(
+			format!("{}/?{}", ALIYUN_DNS_DOMAIN, complete_url_query_params)
+		)
 }
 
 /** desc: generate url query param without 'signature'
@@ -71,7 +73,10 @@ fn flat_to_url_query_param(params: &BTreeMap<&str, String>) -> String {
 
 /** desc: supply the signature param(follow aliyun encrypt rule)
 */
-fn supply_signature(params: &mut BTreeMap<&str, String>, signature_key_secret: &str) {
+fn supply_signature(
+    params: &mut BTreeMap<&str, String>,
+    signature_key_secret: &str,
+) -> anyhow::Result<()> {
     // 1. generate canonicalized query string(url-encode each key and value) btree auto sorted by key
     let canonicalized_query_string = flat_to_url_query_param(params);
     debug!("Canonicalized_query_string: {}", canonicalized_query_string);
@@ -84,7 +89,8 @@ fn supply_signature(params: &mut BTreeMap<&str, String>, signature_key_secret: &
     );
     debug!("String_to_sign: {}", string_to_sign);
     // 3. signature: (Hmac<sha1> + base64encode)
-    let signature = encrypt_by_hmac_sha1(signature_key_secret, &string_to_sign);
+    let signature = encrypt_by_hmac_sha1(signature_key_secret, &string_to_sign)?;
     debug!("Signature: {}", signature);
     params.insert(K_SIGNATURE, signature);
+    Ok(())
 }

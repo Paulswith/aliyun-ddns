@@ -9,7 +9,7 @@ use anyhow::{anyhow, Result};
 pub async fn obtain_domain_records(config_model: &ConfigModel) -> Result<Vec<Record>> {
     let root_domain = config_model.current_root_domain();
     let request_url =
-        generate_request_uri(config_model, root_domain, AC_DESCRIBE_DOMAIN_RECORDS, None);
+        generate_request_uri(config_model, root_domain, AC_DESCRIBE_DOMAIN_RECORDS, None)?;
     debug!("Obtain domain records with url: {}", request_url);
     //TODO: fetch more page
     let client = construct_client(None)?;
