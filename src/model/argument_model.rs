@@ -1,24 +1,17 @@
-use structopt::StructOpt;
 use std::path::PathBuf;
-
+use structopt::StructOpt;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "aliyun-dns", about = "run aliyun-dns with special config path")]
 pub struct Argument {
     /// special config path to run
     #[structopt(short = "c", long = "config-path", parse(from_os_str))]
-    config_path: Option<PathBuf>,
+    pub config_path: Option<PathBuf>,
     /// special log4rs path to run
     #[structopt(short = "l", long = "log-path", parse(from_os_str))]
-    log4rs_path: Option<PathBuf>,
-}
+    pub log4rs_path: Option<PathBuf>,
 
-impl Argument {
-    pub fn config_path(&self) -> &Option<PathBuf> {
-        &self.config_path
-    }
-
-    pub fn log4rs_path(&self) -> &Option<PathBuf> {
-        &self.log4rs_path
-    }
+    /// if true, only run ip detect, skip synchronize
+    #[structopt(short, long)]
+    pub dry_run: bool,
 }

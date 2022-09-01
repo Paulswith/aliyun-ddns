@@ -1,5 +1,5 @@
 root:
-  level: debug # <info debug warn error>, change logger level here
+  level: info # <info debug warn error>, change logger level here
   appenders:
     - general
     - stdout  # if not debugging at IDE, please annotation this line.

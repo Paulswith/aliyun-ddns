@@ -13,17 +13,18 @@ use anyhow::{Context, Result};
 use handler::{obtain_records, update_records};
 use model::argument_model::Argument;
 use network::public_ip_fetcher::get_public_ip;
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 
 pub async fn entry(argument: &Argument) -> Result<()> {
-    app_log4rs_init(argument.log4rs_path())?;
-    let ref config_model = app_config_init(argument.config_path())?;
-
-    info!("\n--------------------------Task start:--------------------------");
+    app_log4rs_init(&argument.log4rs_path)?;
+    let ref config_model = ConfigModel::from_file(&argument.config_path)?;
+    info!("--------------------------Task start:--------------------------");
     // 1. fetch public ip
-    let public_ip = get_public_ip(config_model.ip_providers()).await?;
+    let public_ip = get_public_ip(&config_model).await?;
     info!("Fetch public ip: {}", public_ip);
-
+    if argument.dry_run {
+        return Ok(());
+    }
     // 2. aliyun interaction
     match obtain_records::obtain_domain_records(config_model).await {
         Err(err) => {
@@ -52,24 +53,4 @@ fn app_log4rs_init(log4rs_path: &Option<PathBuf>) -> Result<()> {
         )
     })?;
     Ok(())
-}
-
-fn app_config_init(config_path: &Option<PathBuf>) -> Result<ConfigModel> {
-    let mut path = PathBuf::from(config::general::DEFAULT_CONFIG_PATH);
-    if let Some(config_path) = config_path {
-        path = config_path.to_path_buf();
-    }
-    let common_config_content = fs::read_to_string(&path).with_context(|| {
-        format!(
-            "Unable read config path with config-path: {}",
-            path.to_string_lossy()
-        )
-    })?;
-    let config = serde_yaml::from_str(&common_config_content).with_context(|| {
-        format!(
-            "Unable analysis config_path with config-path: {}",
-            path.to_string_lossy()
-        )
-    })?;
-    Ok(config)
 }
